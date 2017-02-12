@@ -8,8 +8,8 @@ public class Main {
         GraphExprLexer lexer = new GraphExprLexer(new ANTLRFileStream("test.gr"));
         GraphExprParser parser = new GraphExprParser(new CommonTokenStream(lexer));
         ParseTree tree = parser.parse();
-        GraphVisitor visitor = new GraphVisitor();
-        visitor.visit(tree);
+        GraphExprVisitor graphExprVisitor = new GraphVisitor();
+        graphExprVisitor.visit(tree);
     }
 
 }

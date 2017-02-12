@@ -1,5 +1,99 @@
 grammar GraphExpr;
 
+ASSIGN : '=';
+
+GRAPH : 'graph';
+VERTEX : 'vertex';
+EDGE : 'edge';
+
+OANGLEBR : '<';
+CANGLEBR : '>';
+
+PUSH : '<-';
+PULL : '->';
+CONTAIN : '<?>';
+
+PRINT : 'print';
+
+parse
+ : instruction* EOF
+ ;
+
+instruction
+ : create_graph
+ | create_vertex
+ | create_edge
+ | push_in_graph
+ | pull_from_graph
+ | print
+ ;
+
+create_graph
+ : GRAPH ID ASSIGN name_object
+ ;
+
+create_vertex
+ : VERTEX ID ASSIGN name_object
+ ;
+
+create_edge
+ : EDGE ID ASSIGN connect
+ ;
+
+name_object
+ : STRING
+ ;
+
+connect
+ : OANGLEBR source = ID ',' target = ID CANGLEBR
+ ;
+
+push_in_graph
+ : id = ID PUSH push_more
+ ;
+
+pull_from_graph
+ : id = ID PULL pull_more
+ ;
+
+push_more
+ : ID ',' push_more      #pushMore
+ | ID                    #pushOne
+ ;
+
+pull_more
+ : ID ',' pull_more      #pullMore
+ | ID                    #pullOne
+ ;
+
+print
+ : PRINT STRING
+ ;
+
+INT
+ : [0-9]+
+ ;
+
+ID
+ : [a-zA-Z_] [a-zA-Z_0-9]*
+ ;
+
+STRING
+ : '"' (~["\r\n] | '""')* '"'
+ ;
+
+COMMENT
+ : '//' ~[\r\n]* -> skip
+ ;
+
+SPACES
+ : [ \t\r\n] -> skip
+ ;
+
+
+/*
+
+
 NOT : '!';
 
 AND : '&&';
@@ -43,7 +137,6 @@ PRINT : 'print';
 PUSH : '<-';
 PULL : '->';
 CONTAIN : '<?>';
-
 parse
  : block EOF
  ;
@@ -160,3 +253,4 @@ SPACE
 OTHER
  : .
  ;
+ */

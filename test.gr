@@ -1,9 +1,15 @@
-a = 0;
-b = vertex("A");
+// comment
 
-while (a < 20){
-    print a;
-    a = a +1;
-}
+print "START"
 
-print "Done!";
+graph gr = "new graph 1"
+graph gr2 = "new graph 2"
+vertex b = "B"
+vertex c = "C"
+edge e = <b,c>
+
+gr <- b, a , v, d
+
+gr -> c , a, b , d
+
+print "FINISH"

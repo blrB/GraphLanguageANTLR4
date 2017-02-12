@@ -16,204 +16,85 @@ public interface GraphExprVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitParse(GraphExprParser.ParseContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GraphExprParser#block}.
+	 * Visit a parse tree produced by {@link GraphExprParser#instruction}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitBlock(GraphExprParser.BlockContext ctx);
+	T visitInstruction(GraphExprParser.InstructionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GraphExprParser#stat}.
+	 * Visit a parse tree produced by {@link GraphExprParser#create_graph}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitStat(GraphExprParser.StatContext ctx);
+	T visitCreate_graph(GraphExprParser.Create_graphContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GraphExprParser#assignment}.
+	 * Visit a parse tree produced by {@link GraphExprParser#create_vertex}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitAssignment(GraphExprParser.AssignmentContext ctx);
+	T visitCreate_vertex(GraphExprParser.Create_vertexContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GraphExprParser#if_stat}.
+	 * Visit a parse tree produced by {@link GraphExprParser#create_edge}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitIf_stat(GraphExprParser.If_statContext ctx);
+	T visitCreate_edge(GraphExprParser.Create_edgeContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GraphExprParser#condition_block}.
+	 * Visit a parse tree produced by {@link GraphExprParser#name_object}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCondition_block(GraphExprParser.Condition_blockContext ctx);
+	T visitName_object(GraphExprParser.Name_objectContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GraphExprParser#stat_block}.
+	 * Visit a parse tree produced by {@link GraphExprParser#connect}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitStat_block(GraphExprParser.Stat_blockContext ctx);
+	T visitConnect(GraphExprParser.ConnectContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GraphExprParser#while_stat}.
+	 * Visit a parse tree produced by {@link GraphExprParser#push_in_graph}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitWhile_stat(GraphExprParser.While_statContext ctx);
+	T visitPush_in_graph(GraphExprParser.Push_in_graphContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GraphExprParser#foreach_stat}.
+	 * Visit a parse tree produced by {@link GraphExprParser#pull_from_graph}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitForeach_stat(GraphExprParser.Foreach_statContext ctx);
+	T visitPull_from_graph(GraphExprParser.Pull_from_graphContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code pushMore}
+	 * labeled alternative in {@link GraphExprParser#push_more}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPushMore(GraphExprParser.PushMoreContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code pushOne}
+	 * labeled alternative in {@link GraphExprParser#push_more}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPushOne(GraphExprParser.PushOneContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code pullMore}
+	 * labeled alternative in {@link GraphExprParser#pull_more}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPullMore(GraphExprParser.PullMoreContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code pullOne}
+	 * labeled alternative in {@link GraphExprParser#pull_more}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPullOne(GraphExprParser.PullOneContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GraphExprParser#print}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitPrint(GraphExprParser.PrintContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code notExpr}
-	 * labeled alternative in {@link GraphExprParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNotExpr(GraphExprParser.NotExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code unaryMinusExpr}
-	 * labeled alternative in {@link GraphExprParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitUnaryMinusExpr(GraphExprParser.UnaryMinusExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code containGraphExpr}
-	 * labeled alternative in {@link GraphExprParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitContainGraphExpr(GraphExprParser.ContainGraphExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code multiplicationExpr}
-	 * labeled alternative in {@link GraphExprParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMultiplicationExpr(GraphExprParser.MultiplicationExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code atomExpr}
-	 * labeled alternative in {@link GraphExprParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAtomExpr(GraphExprParser.AtomExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code orExpr}
-	 * labeled alternative in {@link GraphExprParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitOrExpr(GraphExprParser.OrExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code pushAndPullGraphExpr}
-	 * labeled alternative in {@link GraphExprParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitPushAndPullGraphExpr(GraphExprParser.PushAndPullGraphExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code atomGraphExpr}
-	 * labeled alternative in {@link GraphExprParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAtomGraphExpr(GraphExprParser.AtomGraphExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code additiveExpr}
-	 * labeled alternative in {@link GraphExprParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAdditiveExpr(GraphExprParser.AdditiveExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code relationalExpr}
-	 * labeled alternative in {@link GraphExprParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitRelationalExpr(GraphExprParser.RelationalExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code equalityExpr}
-	 * labeled alternative in {@link GraphExprParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitEqualityExpr(GraphExprParser.EqualityExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code andExpr}
-	 * labeled alternative in {@link GraphExprParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAndExpr(GraphExprParser.AndExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code graphAtom}
-	 * labeled alternative in {@link GraphExprParser#graph_atom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGraphAtom(GraphExprParser.GraphAtomContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code vertexAtom}
-	 * labeled alternative in {@link GraphExprParser#graph_atom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitVertexAtom(GraphExprParser.VertexAtomContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code edgeAtom}
-	 * labeled alternative in {@link GraphExprParser#graph_atom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitEdgeAtom(GraphExprParser.EdgeAtomContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code parExpr}
-	 * labeled alternative in {@link GraphExprParser#atom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitParExpr(GraphExprParser.ParExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code numberAtom}
-	 * labeled alternative in {@link GraphExprParser#atom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNumberAtom(GraphExprParser.NumberAtomContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code booleanAtom}
-	 * labeled alternative in {@link GraphExprParser#atom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBooleanAtom(GraphExprParser.BooleanAtomContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code idAtom}
-	 * labeled alternative in {@link GraphExprParser#atom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIdAtom(GraphExprParser.IdAtomContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code stringAtom}
-	 * labeled alternative in {@link GraphExprParser#atom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStringAtom(GraphExprParser.StringAtomContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code nullAtom}
-	 * labeled alternative in {@link GraphExprParser#atom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNullAtom(GraphExprParser.NullAtomContext ctx);
 }
