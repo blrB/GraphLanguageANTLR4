@@ -1,15 +1,34 @@
-// comment
+// Graph Language
 
-print "START"
+graph t = "TEST"
 
-graph gr = "new graph 1"
-graph gr2 = "new graph 2"
-vertex b = "B"
-vertex c = "C"
-edge e = <b,c>
+main {
+    print "START"
 
-gr <- b, a , v, d
+    graph gr = "new graph 1"
+    graph gr2 = "new graph 2"
+    vertex b = "B"
+    vertex c = "C"
+    edge e = <b,c>
 
-gr -> c , a, b , d
+    gr <- b, a , v, d
+    gr -> c , a, b , d
 
-print "FINISH"
+    if (b == a){
+        print "b == a"
+    }
+    if (b != a) {
+        print "b != a"
+    }
+
+    if (gr <?> a) {
+        print "GR CONTAIN A"
+    } else if (gr is graph){
+        print "GR not contain A and is GRAPH"
+    } else {
+        print "GR not contain A and is not GRAPH"
+    }
+
+    print "FINISH"
+}
+

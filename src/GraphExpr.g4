@@ -6,26 +6,56 @@ GRAPH : 'graph';
 VERTEX : 'vertex';
 EDGE : 'edge';
 
+OPAR : '(';
+CPAR : ')';
 OANGLEBR : '<';
 CANGLEBR : '>';
+OBRACKET : '{';
+CBRACKET : '}';
 
 PUSH : '<-';
 PULL : '->';
+
 CONTAIN : '<?>';
+EQ : '==';
+NEQ : '!=';
+IS : 'is';
 
 PRINT : 'print';
 
+IF : 'if';
+ELSE : 'else';
+WHILE : 'while';
+FOREACH : 'forEach';
+
+MAIN : 'main';
+
 parse
- : instruction* EOF
+ : create* main EOF
+ ;
+
+main
+ : MAIN OBRACKET start CBRACKET
+ ;
+
+start
+ : instruction*
  ;
 
 instruction
- : create_graph
- | create_vertex
- | create_edge
+ : create
  | push_in_graph
  | pull_from_graph
  | print
+ | if_stat
+ | while_stat
+ | foreach_stat
+ ;
+
+create
+ : create_graph
+ | create_vertex
+ | create_edge
  ;
 
 create_graph
@@ -66,8 +96,45 @@ pull_more
  | ID                    #pullOne
  ;
 
+if_stat
+ : IF condition_block (ELSE IF condition_block)* (ELSE stat_block)?
+ ;
+
+condition_block
+ : OPAR condition CPAR stat_block
+ ;
+
+stat_block
+ : OBRACKET start CBRACKET
+ ;
+
+while_stat
+ : WHILE condition_block
+ ;
+
+foreach_stat
+ : FOREACH OPAR conditionForEach CPAR stat_block
+ ;
+
+condition
+ : ID op=(EQ | NEQ) ID                  #equalityExpr
+ | ID CONTAIN ID                        #contain
+ | ID IS type                           #checkType
+ ;
+
+conditionForEach
+ : VERTEX ID                            #forEachVertex
+ | EDGE ID                              #forEachEdge
+ ;
+
 print
  : PRINT STRING
+ ;
+
+type
+ : VERTEX
+ | EDGE
+ | GRAPH
  ;
 
 INT

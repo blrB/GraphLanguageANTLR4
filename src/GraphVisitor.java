@@ -1,19 +1,47 @@
+import java.util.List;
+
 public class GraphVisitor extends GraphExprBaseVisitor<String> {
+
+    @Override public String visitParse(GraphExprParser.ParseContext ctx) {
+        String buffer = "public class Main {\n";
+        List<GraphExprParser.CreateContext> createContextList = ctx.create();
+        for (int children = 0; children < createContextList.size(); children++){
+            buffer +=  this.visit(createContextList.get(children));
+            buffer += "\n";
+        }
+        buffer += this.visit(ctx.main());
+        buffer += "}\n";
+        return buffer;
+    }
+
+    @Override public String visitMain(GraphExprParser.MainContext ctx) {
+        return  "public static void main(String[]args) throws Exception{\n" +
+                     this.visit(ctx.start()) +
+                "}\n";
+    }
+
+    @Override public String visitStart(GraphExprParser.StartContext ctx) {
+        String buffer = "";
+        for (int children = 0; children < ctx.getChildCount(); children++){
+            buffer += "";
+            buffer += this.visit(ctx.getChild(children));
+            buffer += "\n";
+        }
+        return buffer;
+    }
 
     @Override
     public String visitCreate_graph(GraphExprParser.Create_graphContext ctx) {
         String name = ctx.ID().getText();
         String nameObject = ctx.name_object().getText();
-        System.out.println("Graph " + name + " = new Graph(" + nameObject + ");");
-        return "";
+        return "Graph " + name + " = new Graph(" + nameObject + ");";
     }
 
     @Override
     public String visitCreate_vertex(GraphExprParser.Create_vertexContext ctx) {
         String name = ctx.ID().getText();
         String nameObject = ctx.name_object().getText();
-        System.out.println("Vertex " + name + " = new Vertex(" + nameObject + ");");
-        return "";
+        return "Vertex " + name + " = new Vertex(" + nameObject + ");";
     }
 
     @Override
@@ -21,16 +49,14 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
         String name = ctx.ID().getText();
         String source = ctx.connect().source.getText();
         String target = ctx.connect().target.getText();
-        System.out.println("Edge " + name + " = new Edge(" + source + ", " + target+");");
-        return "";
+        return "Edge " + name + " = new Edge(" + source + ", " + target+");";
     }
 
     @Override
     public String visitPush_in_graph(GraphExprParser.Push_in_graphContext ctx) {
         String name = ctx.id.getText();
         String push = this.visit(ctx.push_more());
-        System.out.println(name + push);
-        return "";
+        return name + push;
     }
 
     @Override
@@ -45,13 +71,11 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
         return ".add(" + push + ")";
     }
 
-
     @Override
     public String visitPull_from_graph(GraphExprParser.Pull_from_graphContext ctx) {
         String name = ctx.id.getText();
         String push = this.visit(ctx.pull_more());
-        System.out.println(name + push);
-        return "";
+        return name + push;
     }
 
     @Override
@@ -69,8 +93,12 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
     @Override
     public String visitPrint(GraphExprParser.PrintContext ctx){
         String string = ctx.STRING().getText();
-        System.out.println("System.out.println(" + string + ");");
-        return "";
+        return "System.out.println(" + string + ");";
     }
+
+    @Override public String visitStat_block(GraphExprParser.Stat_blockContext ctx) {
+        return "{\n" + this.visit(ctx.start()) +"}";
+    }
+
 
 }
