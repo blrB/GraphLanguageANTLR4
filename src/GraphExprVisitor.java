@@ -162,14 +162,14 @@ public interface GraphExprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitCheckType(GraphExprParser.CheckTypeContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code forEachVertex}
-	 * labeled alternative in {@link GraphExprParser#conditionForEach}.
+	 * labeled alternative in {@link GraphExprParser#condition_for_each}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitForEachVertex(GraphExprParser.ForEachVertexContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code forEachEdge}
-	 * labeled alternative in {@link GraphExprParser#conditionForEach}.
+	 * labeled alternative in {@link GraphExprParser#condition_for_each}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */

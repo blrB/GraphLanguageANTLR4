@@ -29,6 +29,18 @@ main {
         print "GR not contain A and is not GRAPH"
     }
 
+    while(gr <?> a){
+        print "contain a"
+    }
+
+    forEach(vertex v in g){
+        print "for each vertex"
+    }
+
+    forEach(edge e in g){
+        print "for each vertex"
+    }
+
     print "FINISH"
 }
 

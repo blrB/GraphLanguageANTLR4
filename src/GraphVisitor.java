@@ -100,5 +100,79 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
         return "{\n" + this.visit(ctx.start()) +"}";
     }
 
+    @Override
+    public String visitIf_stat(GraphExprParser.If_statContext ctx) {
+        String buffer = "";
+        List<GraphExprParser.Condition_blockContext> conditions =  ctx.condition_block();
+        boolean evaluatedBlock = false;
+        for(int index = 0; index < conditions.size(); index++) {
+            String conditionString = this.visit(conditions.get(index).condition());
+            buffer += "if (" + conditionString + ")";
+            buffer += this.visit(conditions.get(index).stat_block());
+            if ((index + 1) < conditions.size()){
+                buffer += "else ";
+            }
+        }
+        if(ctx.stat_block() != null) {
+            buffer += "else" + this.visit(ctx.stat_block());
+        }
+        return buffer;
+    }
+
+    @Override public String visitCondition_block(GraphExprParser.Condition_blockContext ctx) {
+        return visitChildren(ctx);
+    }
+
+    @Override
+    public String visitEqualityExpr(GraphExprParser.EqualityExprContext ctx) {
+        String left = ctx.ID(0).getText();
+        String right = ctx.ID(1).getText();
+        switch (ctx.op.getType()) {
+            case GraphExprParser.EQ:
+                return left + ".equal("+ right + ")";
+            case GraphExprParser.NEQ:
+                return "!" + left + ".equal("+ right + ")";
+            default:
+                throw new RuntimeException("Unknown operator: " + GraphExprParser.tokenNames[ctx.op.getType()]);
+        }
+    }
+
+    @Override public String visitContain(GraphExprParser.ContainContext ctx) {
+        String left = ctx.ID(0).getText();
+        String right = ctx.ID(1).getText();
+        return left + ".contain("+ right + ")";
+    }
+
+    @Override public String visitCheckType(GraphExprParser.CheckTypeContext ctx) {
+        String left = ctx.ID().getText();
+        String right = ctx.type().getText();
+        right = right.substring(0,1).toUpperCase() + right.substring(1).toLowerCase();
+        return left + " instanceof " + right;
+    }
+
+    @Override
+    public String visitWhile_stat(GraphExprParser.While_statContext ctx) {
+        return "while (" + this.visit(ctx.condition_block().condition()) + ")" +
+                this.visit(ctx.condition_block().stat_block());
+    }
+
+    @Override
+    public String visitForeach_stat(GraphExprParser.Foreach_statContext ctx) {
+        return "for (" + this.visit(ctx.condition_for_each()) + ")" +
+                this.visit(ctx.stat_block());
+    }
+
+    @Override public String  visitForEachVertex(GraphExprParser.ForEachVertexContext ctx) {
+        String left = ctx.ID(0).getText();
+        String right = ctx.ID(1).getText();
+        return "Vertex " + left + " : "+ right;
+    }
+
+    @Override public String visitForEachEdge(GraphExprParser.ForEachEdgeContext ctx) {
+        String left = ctx.ID(0).getText();
+        String right = ctx.ID(1).getText();
+        return "Edge " + left + " : "+ right;
+    }
+
 
 }
