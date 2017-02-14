@@ -10,6 +10,7 @@ main {
     vertex b = "B"
     vertex c = "C"
     edge e = <b,c>
+    edge e2 = function()
 
     gr <- b, a , v, d
     gr -> c , a, b , d
@@ -41,6 +42,18 @@ main {
         print "for each vertex"
     }
 
+    f()
+    fg(g, v)
+
     print "FINISH"
+}
+
+fn f(){
+    print "fn f"
+}
+
+fn graph fg(graph g, vertex v){
+    g <- v
+    return g
 }
 

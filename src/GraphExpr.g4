@@ -31,9 +31,11 @@ WHILE : 'while';
 FOREACH : 'forEach';
 
 MAIN : 'main';
+FUNCTION : 'fn';
+RETURN : 'return';
 
 parse
- : create* main EOF
+ : create* main function* EOF
  ;
 
 main
@@ -52,6 +54,7 @@ instruction
  | if_stat
  | while_stat
  | foreach_stat
+ | function_call
  ;
 
 create
@@ -61,19 +64,30 @@ create
  ;
 
 create_graph
- : GRAPH ID ASSIGN name_object
+ : GRAPH ID ASSIGN name_object_graph
  ;
 
 create_vertex
- : VERTEX ID ASSIGN name_object
+ : VERTEX ID ASSIGN name_object_vertex
  ;
 
 create_edge
- : EDGE ID ASSIGN connect
+ : EDGE ID ASSIGN name_object_edge
  ;
 
-name_object
- : STRING
+name_object_graph
+ : STRING                   #nameObjectGraph
+ | function_call            #functionCallGraph
+ ;
+
+name_object_vertex
+ : STRING                   #nameObjectVertex
+ | function_call            #functionCallVertex
+ ;
+
+name_object_edge
+ : connect                  #nameObjectEdge
+ | function_call            #functionCallEdge
  ;
 
 connect
@@ -131,6 +145,41 @@ condition_for_each
 
 print
  : PRINT STRING
+ ;
+
+function_call
+ : ID param_call
+ ;
+
+param_call
+ : OPAR (arg_call)? CPAR
+ ;
+
+arg_call
+ : ID                      #paramCallArg
+ | ID ',' arg_call         #paramCallArgs
+ ;
+
+function
+ : FUNCTION ID param stat_block                     #voidFunction
+ | FUNCTION type ID param stat_block_with_return    #returnFunction
+ ;
+
+stat_block_with_return
+ : OBRACKET start return_id CBRACKET
+ ;
+
+return_id
+ : RETURN ID
+ ;
+
+param
+ : OPAR (arg)? CPAR
+ ;
+
+arg
+ : type ID                      #paramArg
+ | type ID ',' arg              #paramArgs
  ;
 
 type

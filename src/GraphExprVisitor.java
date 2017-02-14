@@ -58,11 +58,47 @@ public interface GraphExprVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCreate_edge(GraphExprParser.Create_edgeContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GraphExprParser#name_object}.
+	 * Visit a parse tree produced by the {@code nameObjectGraph}
+	 * labeled alternative in {@link GraphExprParser#name_object_graph}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitName_object(GraphExprParser.Name_objectContext ctx);
+	T visitNameObjectGraph(GraphExprParser.NameObjectGraphContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code functionCallGraph}
+	 * labeled alternative in {@link GraphExprParser#name_object_graph}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionCallGraph(GraphExprParser.FunctionCallGraphContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code nameObjectVertex}
+	 * labeled alternative in {@link GraphExprParser#name_object_vertex}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNameObjectVertex(GraphExprParser.NameObjectVertexContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code functionCallVertex}
+	 * labeled alternative in {@link GraphExprParser#name_object_vertex}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionCallVertex(GraphExprParser.FunctionCallVertexContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code nameObjectEdge}
+	 * labeled alternative in {@link GraphExprParser#name_object_edge}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNameObjectEdge(GraphExprParser.NameObjectEdgeContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code functionCallEdge}
+	 * labeled alternative in {@link GraphExprParser#name_object_edge}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionCallEdge(GraphExprParser.FunctionCallEdgeContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GraphExprParser#connect}.
 	 * @param ctx the parse tree
@@ -180,6 +216,78 @@ public interface GraphExprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitPrint(GraphExprParser.PrintContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GraphExprParser#function_call}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunction_call(GraphExprParser.Function_callContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GraphExprParser#param_call}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParam_call(GraphExprParser.Param_callContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code paramCallArg}
+	 * labeled alternative in {@link GraphExprParser#arg_call}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParamCallArg(GraphExprParser.ParamCallArgContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code paramCallArgs}
+	 * labeled alternative in {@link GraphExprParser#arg_call}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParamCallArgs(GraphExprParser.ParamCallArgsContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code voidFunction}
+	 * labeled alternative in {@link GraphExprParser#function}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVoidFunction(GraphExprParser.VoidFunctionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code returnFunction}
+	 * labeled alternative in {@link GraphExprParser#function}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitReturnFunction(GraphExprParser.ReturnFunctionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GraphExprParser#stat_block_with_return}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStat_block_with_return(GraphExprParser.Stat_block_with_returnContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GraphExprParser#return_id}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitReturn_id(GraphExprParser.Return_idContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GraphExprParser#param}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParam(GraphExprParser.ParamContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code paramArg}
+	 * labeled alternative in {@link GraphExprParser#arg}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParamArg(GraphExprParser.ParamArgContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code paramArgs}
+	 * labeled alternative in {@link GraphExprParser#arg}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParamArgs(GraphExprParser.ParamArgsContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GraphExprParser#type}.
 	 * @param ctx the parse tree

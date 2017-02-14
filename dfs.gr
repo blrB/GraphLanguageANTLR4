@@ -1,0 +1,34 @@
+// DFS
+
+graph dfsTree = "Dfs Tree Graph"
+graph used = "Used vertex"
+
+main {
+    graph gr = createGraph()
+    vertex v4 = "v4"
+    edge e3 = <v3,v4>
+    gr <- e3
+    dfs(gr, v4)
+}
+
+fn graph createGraph(){
+    graph gr = "test graph"
+    vertex v1 = "v1"
+    vertex v2 = "v2"
+    vertex v3 = "v3"
+    edge e1 = <v1,v2>
+    edge e2 = <v2,v3>
+    gr <- e1, e2
+    return gr
+}
+
+fn dfs(graph g, vertex v){
+    forEach(vertex to in g){
+        if (used <?> to){
+            edge e = <v,to>
+            dfsTree <- e
+            used <- to
+            dfs(g, to)
+        }
+    }
+}
