@@ -16,10 +16,12 @@ CBRACKET : '}';
 PUSH : '<-';
 PULL : '->';
 
+NEGATION : '!';
 CONTAIN : '<?>';
 EQ : '==';
 NEQ : '!=';
 IS : 'is';
+PLUS : '+';
 
 IN : 'in';
 
@@ -117,7 +119,7 @@ if_stat
  ;
 
 condition_block
- : OPAR condition CPAR stat_block
+ : OPAR (NEGATION)? condition CPAR stat_block
  ;
 
 stat_block
@@ -140,11 +142,18 @@ condition
 
 condition_for_each
  : VERTEX ID IN ID                      #forEachVertex
+ | VERTEX ID IN ID IN ID                #forEachAdjacencyVertex
  | EDGE ID IN ID                        #forEachEdge
  ;
 
 print
- : PRINT STRING
+ : PRINT print_expr
+ ;
+
+print_expr
+ : print_expr PLUS print_expr           #concatString
+ | ID                                   #printId
+ | STRING                               #printString
  ;
 
 function_call

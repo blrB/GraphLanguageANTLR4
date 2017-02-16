@@ -4,11 +4,14 @@ graph dfsTree = "Dfs Tree Graph"
 graph used = "Used vertex"
 
 main {
+    print "DFS START"
     graph gr = createGraph()
+    vertex v3 = "v3"
     vertex v4 = "v4"
     edge e3 = <v3,v4>
     gr <- e3
     dfs(gr, v4)
+    print "DFS FINISH\n" + dfsTree
 }
 
 fn graph createGraph(){
@@ -23,11 +26,11 @@ fn graph createGraph(){
 }
 
 fn dfs(graph g, vertex v){
-    forEach(vertex to in g){
-        if (used <?> to){
+    used <- v
+    forEach(vertex to in v in g){
+        if (! used <?> to){
             edge e = <v,to>
             dfsTree <- e
-            used <- to
             dfs(g, to)
         }
     }

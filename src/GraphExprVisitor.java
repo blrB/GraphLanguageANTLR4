@@ -204,6 +204,13 @@ public interface GraphExprVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitForEachVertex(GraphExprParser.ForEachVertexContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code forEachAdjacencyVertex}
+	 * labeled alternative in {@link GraphExprParser#condition_for_each}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitForEachAdjacencyVertex(GraphExprParser.ForEachAdjacencyVertexContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code forEachEdge}
 	 * labeled alternative in {@link GraphExprParser#condition_for_each}.
 	 * @param ctx the parse tree
@@ -216,6 +223,27 @@ public interface GraphExprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitPrint(GraphExprParser.PrintContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code concatString}
+	 * labeled alternative in {@link GraphExprParser#print_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConcatString(GraphExprParser.ConcatStringContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code printId}
+	 * labeled alternative in {@link GraphExprParser#print_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPrintId(GraphExprParser.PrintIdContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code printString}
+	 * labeled alternative in {@link GraphExprParser#print_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPrintString(GraphExprParser.PrintStringContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GraphExprParser#function_call}.
 	 * @param ctx the parse tree

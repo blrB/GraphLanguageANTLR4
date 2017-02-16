@@ -18,18 +18,19 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
     }
 
     @Override public String visitParse(GraphExprParser.ParseContext ctx) {
-        String buffer = "public class " + className + " {\n";
+        String buffer = "import by.bsuir.lpis.grlang.*;\n";
+        buffer += "public class " + className + " {\n";
         List<GraphExprParser.CreateContext> createContextList = ctx.create();
         for (GraphExprParser.CreateContext aCreateContextList : createContextList) {
-            buffer += this.visit(aCreateContextList);
+            buffer += "static " + this.visit(aCreateContextList);
             buffer += "\n";
         }
-        buffer += this.visit(ctx.main());
         List<GraphExprParser.FunctionContext> functionContextList = ctx.function();
         for (GraphExprParser.FunctionContext aFunctionContextList : functionContextList) {
             buffer += this.visit(aFunctionContextList);
             buffer += "\n";
         }
+        buffer += this.visit(ctx.main());
         buffer += "}\n";
         return buffer;
     }
@@ -128,9 +129,26 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
 
     @Override
     public String visitPrint(GraphExprParser.PrintContext ctx){
-        String string = ctx.STRING().getText();
-        return "System.out.println(" + string + ");";
+        return "System.out.println(" + this.visit(ctx.print_expr()) + ");";
     }
+
+    @Override
+    public String visitConcatString(GraphExprParser.ConcatStringContext ctx) {
+        String string1 = this.visit(ctx.print_expr(0));
+        String string2 = this.visit(ctx.print_expr(1));
+        return string1 + " + " + string2;
+    }
+
+    @Override
+    public String visitPrintId(GraphExprParser.PrintIdContext ctx) {
+        return ctx.ID().toString();
+    }
+
+    @Override
+    public String visitPrintString(GraphExprParser.PrintStringContext ctx) {
+        return ctx.STRING().getText();
+    }
+
 
     @Override public String visitStat_block(GraphExprParser.Stat_blockContext ctx) {
         return "{\n" + this.visit(ctx.start()) +"}";
@@ -142,7 +160,11 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
         List<GraphExprParser.Condition_blockContext> conditions =  ctx.condition_block();
         for(int index = 0; index < conditions.size(); index++) {
             String conditionString = this.visit(conditions.get(index).condition());
-            buffer += "if (" + conditionString + ")";
+            String negation ="";
+            if (conditions.get(index).NEGATION() != null){
+                negation = "!";
+            }
+            buffer += "if (" + negation + conditionString + ")";
             buffer += this.visit(conditions.get(index).stat_block());
             if ((index + 1) < conditions.size()){
                 buffer += "else ";
@@ -197,16 +219,26 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
                 this.visit(ctx.stat_block());
     }
 
-    @Override public String  visitForEachVertex(GraphExprParser.ForEachVertexContext ctx) {
+    @Override
+    public String  visitForEachVertex(GraphExprParser.ForEachVertexContext ctx) {
         String left = ctx.ID(0).getText();
         String right = ctx.ID(1).getText();
-        return "Vertex " + left + " : "+ right;
+        return "Vertex " + left + " : "+ right + ".getVertices()";
     }
 
-    @Override public String visitForEachEdge(GraphExprParser.ForEachEdgeContext ctx) {
+    @Override
+    public String visitForEachEdge(GraphExprParser.ForEachEdgeContext ctx) {
         String left = ctx.ID(0).getText();
         String right = ctx.ID(1).getText();
-        return "Edge " + left + " : "+ right;
+        return "Edge " + left + " : "+ right + ".getEdges()";
+    }
+
+    @Override
+    public String visitForEachAdjacencyVertex(GraphExprParser.ForEachAdjacencyVertexContext ctx)  {
+        String left = ctx.ID(0).getText();
+        String vertex = ctx.ID(1).getText();
+        String graph = ctx.ID(2).getText();
+        return "Vertex " + left + " : " + graph + ".getAdjacencyVertices(" + vertex + ")";
     }
 
     @Override
