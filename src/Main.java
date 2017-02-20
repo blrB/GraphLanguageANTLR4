@@ -10,7 +10,13 @@ public class Main {
     private static final String pachPom = "ANTLRGRL/pom.xml";
 
     public static void main(String[] args) throws Exception {
-        String fileName = "dfs.gr";
+        String fileName = "";
+        if (args.length == 1){
+            fileName = args[0];
+        } else {
+            System.out.print("Not valid arg");
+            System.exit(-1);
+        }
         GraphExprLexer lexer = new GraphExprLexer(new ANTLRFileStream(fileName));
         GraphExprParser parser = new GraphExprParser(new CommonTokenStream(lexer));
         ParseTree tree = parser.parse();
