@@ -18,8 +18,8 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
     }
 
     @Override public String visitParse(GraphExprParser.ParseContext ctx) {
-        String buffer = "import by.bsuir.lpis.grlang.*;\n";
-        buffer += "public class " + className + " {\n";
+        String buffer = "package by.bsuir.lpis.grlang;\n";
+        buffer += "public class " + "Main" + " {\n";
         List<GraphExprParser.CreateContext> createContextList = ctx.create();
         for (GraphExprParser.CreateContext aCreateContextList : createContextList) {
             buffer += "static " + this.visit(aCreateContextList);

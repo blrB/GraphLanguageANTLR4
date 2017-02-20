@@ -7,11 +7,8 @@ main {
     print "DFS START"
     graph gr = createGraph()
     vertex v3 = "v3"
-    vertex v4 = "v4"
-    edge e3 = <v3,v4>
-    gr <- e3
-    dfs(gr, v4)
-    print "DFS FINISH\n" + dfsTree
+    dfs(gr, v3)
+    print "DFS FINISH"
 }
 
 fn graph createGraph(){
@@ -19,9 +16,11 @@ fn graph createGraph(){
     vertex v1 = "v1"
     vertex v2 = "v2"
     vertex v3 = "v3"
+    vertex v4 = "v4"
     edge e1 = <v1,v2>
     edge e2 = <v2,v3>
-    gr <- e1, e2
+    edge e3 = <v3,v4>
+    gr <- e1, e2, e3
     return gr
 }
 
@@ -30,6 +29,7 @@ fn dfs(graph g, vertex v){
     forEach(vertex to in v in g){
         if (! used <?> to){
             edge e = <v,to>
+            print "Go from " + v + " to " + to
             dfsTree <- e
             dfs(g, to)
         }
