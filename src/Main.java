@@ -2,6 +2,8 @@ import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 public class Main {
@@ -22,12 +24,27 @@ public class Main {
         ParseTree tree = parser.parse();
         GraphExprVisitor graphExprVisitor = new GraphVisitor(fileName);
         String output = (String) graphExprVisitor.visit(tree);
-        System.out.print(output);
+        //System.out.print(output);
         PrintWriter printer = new PrintWriter(pach);
         printer.print(output);
         printer.close();
 
-        Runtime.getRuntime().exec("mvn -f " + pachPom + " package");
+        Process p = Runtime.getRuntime().exec("mvn -f " + pachPom + " package");
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(p.getInputStream()) );
+        String line;
+        while ((line = in.readLine()) != null) {
+            System.out.println(line);
+        }
+        in.close();
+        System.out.println("\nRESULT PROGRAM : \n");
+        p = Runtime.getRuntime().exec("java -jar ANTLRGRL/target/ANTLR-GRL-1.0-SNAPSHOT.jar");
+        in = new BufferedReader(
+                new InputStreamReader(p.getInputStream()) );
+        while ((line = in.readLine()) != null) {
+            System.out.println(line);
+        }
+        in.close();
     }
 
 }
