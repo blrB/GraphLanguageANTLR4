@@ -9,9 +9,11 @@ import java.io.PrintWriter;
 public class Main {
 
     private static final String pach = "ANTLRGRL/src/main/java/by/bsuir/lpis/grlang/Main.java";
+    private static final String pachJar = "ANTLRGRL/target/ANTLR-GRL-1.0-SNAPSHOT.jar";
     private static final String pachPom = "ANTLRGRL/pom.xml";
 
     public static void main(String[] args) throws Exception {
+        Runtime.getRuntime().exec("rm -f " + pachJar);
         String fileName = "";
         if (args.length == 1){
             fileName = args[0];
@@ -38,7 +40,7 @@ public class Main {
         }
         in.close();
         System.out.println("\nRESULT PROGRAM : \n");
-        p = Runtime.getRuntime().exec("java -jar ANTLRGRL/target/ANTLR-GRL-1.0-SNAPSHOT.jar");
+        p = Runtime.getRuntime().exec("java -jar " + pachJar);
         in = new BufferedReader(
                 new InputStreamReader(p.getInputStream()) );
         while ((line = in.readLine()) != null) {
