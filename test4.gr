@@ -1,0 +1,21 @@
+// test4
+
+main {
+    graph gr = "test graph"
+    vertex v1 = "v1"
+    vertex v2 = "v2"
+    vertex v3 = "v3"
+    gr <- v1, v2, v3
+    vertex temp = v1
+    while(gr <?> temp){
+        print temp
+        gr -> temp
+        if (temp == v1){
+            temp = v2
+        } else if (temp != v3){
+            temp = v3
+        } else {
+            temp = "end"
+        }
+    }
+}

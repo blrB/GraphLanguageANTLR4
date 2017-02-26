@@ -1,0 +1,12 @@
+// test2
+
+main {
+    vertex v1 = "v1"
+    if (v1 is edge){
+        print "gr is edge"
+    } else if (v1 is vertex){
+        print "gr is vertex"
+    } else if (v1 is graph){
+        print "gr is graph"
+    }
+}

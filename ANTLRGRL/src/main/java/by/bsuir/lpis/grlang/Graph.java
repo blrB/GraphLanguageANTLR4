@@ -96,4 +96,8 @@ public class Graph implements Id{
         return edges.contains(edge);
     }
 
+    public boolean contain(Graph graph){
+        return vertices.containsAll(graph.getVertices()) && edges.containsAll(graph.getEdges());
+    }
+
 }

@@ -72,6 +72,13 @@ public interface GraphExprVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunctionCallGraph(GraphExprParser.FunctionCallGraphContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code idGraph}
+	 * labeled alternative in {@link GraphExprParser#name_object_graph}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIdGraph(GraphExprParser.IdGraphContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code nameObjectVertex}
 	 * labeled alternative in {@link GraphExprParser#name_object_vertex}.
 	 * @param ctx the parse tree
@@ -86,6 +93,13 @@ public interface GraphExprVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunctionCallVertex(GraphExprParser.FunctionCallVertexContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code idVertex}
+	 * labeled alternative in {@link GraphExprParser#name_object_vertex}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIdVertex(GraphExprParser.IdVertexContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code nameObjectEdge}
 	 * labeled alternative in {@link GraphExprParser#name_object_edge}.
 	 * @param ctx the parse tree
@@ -99,6 +113,13 @@ public interface GraphExprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitFunctionCallEdge(GraphExprParser.FunctionCallEdgeContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code idEdge}
+	 * labeled alternative in {@link GraphExprParser#name_object_edge}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIdEdge(GraphExprParser.IdEdgeContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GraphExprParser#connect}.
 	 * @param ctx the parse tree

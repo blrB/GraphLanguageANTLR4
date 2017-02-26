@@ -66,30 +66,33 @@ create
  ;
 
 create_graph
- : GRAPH ID ASSIGN name_object_graph
+ : (GRAPH)? ID ASSIGN name_object_graph
  ;
 
 create_vertex
- : VERTEX ID ASSIGN name_object_vertex
+ : (VERTEX)? ID ASSIGN name_object_vertex
  ;
 
 create_edge
- : EDGE ID ASSIGN name_object_edge
+ : (EDGE)? ID ASSIGN name_object_edge
  ;
 
 name_object_graph
  : STRING                   #nameObjectGraph
  | function_call            #functionCallGraph
+ | ID                       #idGraph
  ;
 
 name_object_vertex
  : STRING                   #nameObjectVertex
  | function_call            #functionCallVertex
+ | ID                       #idVertex
  ;
 
 name_object_edge
  : connect                  #nameObjectEdge
  | function_call            #functionCallEdge
+ | ID                       #idEdge
  ;
 
 connect

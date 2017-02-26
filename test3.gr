@@ -1,0 +1,12 @@
+// test3
+
+main {
+    graph gr = "test graph"
+    vertex v1 = "v1"
+    vertex v2 = "v2"
+    vertex v3 = "v3"
+    gr <- v1, v2, v3
+    forEach(vertex v in gr){
+        print v
+    }
+}

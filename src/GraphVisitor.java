@@ -1,3 +1,5 @@
+import exceptions.NotDefinedVariable;
+import exceptions.NotValidCast;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.*;
@@ -5,9 +7,9 @@ import java.util.*;
 public class GraphVisitor extends GraphExprBaseVisitor<String> {
 
     private String className;
-    private List<String> globalVariable = new ArrayList<>();
-    private List<String> localVariable = new ArrayList<>();
-    private List<String> functionNames = new ArrayList<>();
+    private Map<String, Type> globalVariable = new HashMap<>();
+    private Map<String, Type> localVariable = new HashMap<>();
+    private Map<String, Type> functionNames = new HashMap<>();
 
     public GraphVisitor(String fileName){
         String fileNameForClass = getStringWithFirstCapital(fileName);
@@ -26,28 +28,28 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
         return ctx.getParent().getParent() instanceof GraphExprParser.ParseContext;
     }
 
-    private void addVariableToList(ParserRuleContext ctx, String name) {
+    private void addVariableToList(ParserRuleContext ctx, String name, Type type) {
         if (isGlobal(ctx)){
-            globalVariable.add(name);
+            globalVariable.put(name, type);
         } else {
-            localVariable.add(name);
+            localVariable.put(name, type);
         }
     }
 
-    private void addToLocalVariableList(String name){
-        localVariable.add(name);
+    private void addToLocalVariableList(String name, Type type){
+        localVariable.put(name, type);
     }
 
     private void clearLocalVariableList(){
         localVariable.clear();
     }
 
-    private void addToFunctionList(String name){
-        functionNames.add(name);
+    private void addToFunctionList(String name, Type type){
+        functionNames.put(name, type);
     }
 
     private void checkVariable(String name) {
-        if (!(globalVariable.contains(name) || localVariable.contains(name))){
+        if (!(globalVariable.containsKey(name) || localVariable.containsKey(name))){
             try {
                 throw new NotDefinedVariable("Variable " + name + " is not defined");
             } catch (NotDefinedVariable notDefinedVariable) {
@@ -58,14 +60,55 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
     }
 
     private void checkFunction(String name) {
-        if (!(functionNames.contains(name))){
+        if (!(functionNames.containsKey(name))){
             try {
                 throw new NotDefinedVariable("Function " + name + " is not defined");
             } catch (NotDefinedVariable notDefinedVariable) {
                 notDefinedVariable.printStackTrace();
-                System.exit(-1);
+                System.exit(-2);
             }
         }
+    }
+
+    private void checkCast(String name, Type needType) {
+        try {
+            if (localVariable.containsKey(name)) {
+                if (!(localVariable.get(name).equals(needType))) {
+                    throw new NotValidCast("Variable " + name + " need have type " + needType);
+                }
+            } else {
+                if (!(globalVariable.get(name).equals(needType))) {
+                    throw new NotValidCast("Variable " + name + " need have type " + needType);
+                }
+            }
+        } catch (NotValidCast notValidCast) {
+            notValidCast.printStackTrace();
+            System.exit(-3);
+        }
+    }
+
+    private void checkCastFunction(String name, Type needType){
+        if (!(functionNames.get(name).equals(needType))){
+            try {
+                throw new NotValidCast("Function " + name + " need have type " + needType);
+            } catch (NotValidCast notValidCast) {
+                notValidCast.printStackTrace();
+                System.exit(-4);
+            }
+        }
+
+    }
+
+    private Type getTypeVariable(String name){
+        if (localVariable.containsKey(name)) {
+            return localVariable.get(name);
+        } else {
+            return globalVariable.get(name);
+        }
+    }
+
+    private boolean notExistLocaleVariable(String name){
+        return !localVariable.containsKey(name);
     }
 
     @Override
@@ -110,35 +153,95 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
     @Override
     public String visitCreate_graph(GraphExprParser.Create_graphContext ctx) {
         String name = ctx.ID().getText();
-        addVariableToList(ctx, name);
+        String newVariable = "";
+        if (notExistLocaleVariable(name)){
+            addVariableToList(ctx, name, Type.GRAPH);
+            newVariable = Type.GRAPH.toString() + " ";
+        }
         String nameObject = this.visit(ctx.name_object_graph());
-        return "Graph " + name + " = " + nameObject;
+        return newVariable + name + " = " + nameObject;
     }
 
     @Override
     public String visitCreate_vertex(GraphExprParser.Create_vertexContext ctx) {
         String name = ctx.ID().getText();
-        addVariableToList(ctx, name);
+        String newVariable = "";
+        if (notExistLocaleVariable(name)){
+            addVariableToList(ctx, name, Type.VERTEX);
+            newVariable = Type.VERTEX.toString() + " ";
+        }
         String nameObject = this.visit(ctx.name_object_vertex());
-        return "Vertex " + name + " = " + nameObject;
+        return newVariable + name + " = " + nameObject;
     }
 
     @Override
     public String visitCreate_edge(GraphExprParser.Create_edgeContext ctx) {
         String name = ctx.ID().getText();
-        addVariableToList(ctx, name);
+        String newVariable = "";
+        if (notExistLocaleVariable(name)){
+            addVariableToList(ctx, name, Type.EDGE);
+            newVariable = Type.EDGE.toString() + " ";
+        }
         String nameObject = this.visit(ctx.name_object_edge());
-        return "Edge " + name + " = " + nameObject;
+        return newVariable + name + " = " + nameObject;
     }
 
     @Override
     public String visitNameObjectGraph(GraphExprParser.NameObjectGraphContext ctx) {
-        return "new Graph(" + ctx.STRING().getText() + ");";
+        GraphExprParser.Create_graphContext context = (GraphExprParser.Create_graphContext) ctx.getParent();
+        String name = context.ID().getText();
+        Type type = getTypeVariable(name);
+        return "new " + type + "(" + ctx.STRING().getText() + ");";
+    }
+
+    @Override
+    public String visitIdGraph(GraphExprParser.IdGraphContext ctx) {
+        String right = ctx.ID().getText();
+        checkVariable(right);
+        GraphExprParser.Create_graphContext context = (GraphExprParser.Create_graphContext) ctx.getParent();
+        String left = context.ID().getText();
+        checkCast(right, getTypeVariable(left));
+        return right + ";";
+    }
+
+    @Override
+    public String visitFunctionCallGraph(GraphExprParser.FunctionCallGraphContext ctx) {
+        GraphExprParser.Function_callContext context = ctx.function_call();
+        String name = context.ID().getText();
+        checkFunction(name);
+        GraphExprParser.Create_graphContext contextP = (GraphExprParser.Create_graphContext) ctx.getParent();
+        String left = contextP.ID().getText();
+        checkCastFunction(name, getTypeVariable(left));
+        return name + this.visit(context.param_call());
     }
 
     @Override
     public String visitNameObjectVertex(GraphExprParser.NameObjectVertexContext ctx) {
-        return "new Vertex(" + ctx.STRING().getText() + ");";
+        GraphExprParser.Create_vertexContext context = (GraphExprParser.Create_vertexContext) ctx.getParent();
+        String name = context.ID().getText();
+        Type type = getTypeVariable(name);
+        return "new " + type + "(" + ctx.STRING().getText() + ");";
+    }
+
+    @Override
+    public String visitIdVertex(GraphExprParser.IdVertexContext ctx) {
+        String right = ctx.ID().getText();
+        checkVariable(right);
+        GraphExprParser.Create_vertexContext context = (GraphExprParser.Create_vertexContext) ctx.getParent();
+        String left = context.ID().getText();
+        checkCast(right, getTypeVariable(left));
+        return right + ";";
+    }
+
+    @Override
+    public String visitFunctionCallVertex(GraphExprParser.FunctionCallVertexContext ctx) {
+        GraphExprParser.Function_callContext context = ctx.function_call();
+        String name = context.ID().getText();
+        checkFunction(name);
+        GraphExprParser.Create_vertexContext contextP = (GraphExprParser.Create_vertexContext) ctx.getParent();
+        String left = contextP.ID().getText();
+        checkCastFunction(name, getTypeVariable(left));
+        return name + this.visit(context.param_call());
     }
 
     @Override
@@ -147,7 +250,31 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
         checkVariable(source);
         String target = ctx.connect().target.getText();
         checkVariable(target);
-        return "new Edge(" + source + ", " + target+");";
+        GraphExprParser.Create_edgeContext context = (GraphExprParser.Create_edgeContext) ctx.getParent();
+        String name = context.ID().getText();
+        Type type = getTypeVariable(name);
+        return "new " + type + "(" + source + ", " + target+");";
+    }
+
+    @Override
+    public String visitIdEdge(GraphExprParser.IdEdgeContext ctx) {
+        String right = ctx.ID().getText();
+        checkVariable(right);
+        GraphExprParser.Create_edgeContext context = (GraphExprParser.Create_edgeContext) ctx.getParent();
+        String left = context.ID().getText();
+        checkCast(right, getTypeVariable(left));
+        return right + ";";
+    }
+
+    @Override
+    public String visitFunctionCallEdge(GraphExprParser.FunctionCallEdgeContext ctx) {
+        GraphExprParser.Function_callContext context = ctx.function_call();
+        String name = context.ID().getText();
+        checkFunction(name);
+        GraphExprParser.Create_edgeContext contextP = (GraphExprParser.Create_edgeContext) ctx.getParent();
+        String left = contextP.ID().getText();
+        checkCastFunction(name, getTypeVariable(left));
+        return name + this.visit(context.param_call());
     }
 
     @Override
@@ -220,7 +347,7 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
 
 
     @Override public String visitStat_block(GraphExprParser.Stat_blockContext ctx) {
-        List<String> beforeStatBlock = new ArrayList<>(localVariable);
+        Map<String, Type> beforeStatBlock = new HashMap(localVariable);
         String block = "{\n" + this.visit(ctx.start()) +"}";
         localVariable = beforeStatBlock;
         return block;
@@ -260,9 +387,9 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
         checkVariable(right);
         switch (ctx.op.getType()) {
             case GraphExprParser.EQ:
-                return left + ".equal("+ right + ")";
+                return left + ".equals("+ right + ")";
             case GraphExprParser.NEQ:
-                return "!" + left + ".equal("+ right + ")";
+                return "!" + left + ".equals("+ right + ")";
             default:
                 throw new RuntimeException("Unknown operator: " + ctx.op.getText());
         }
@@ -271,6 +398,7 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
     @Override public String visitContain(GraphExprParser.ContainContext ctx) {
         String left = ctx.ID(0).getText();
         checkVariable(left);
+        checkCast(left, Type.GRAPH);
         String right = ctx.ID(1).getText();
         checkVariable(right);
         return left + ".contain("+ right + ")";
@@ -281,7 +409,7 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
         checkVariable(left);
         String right = ctx.type().getText();
         right = getStringWithFirstCapital(right);
-        return left + " instanceof " + right;
+        return left + ".getClass().getSimpleName().equals(\"" + right + "\")";
     }
 
     @Override
@@ -292,7 +420,7 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
 
     @Override
     public String visitForeach_stat(GraphExprParser.Foreach_statContext ctx) {
-        List<String> beforeStatBlock = new ArrayList<>(localVariable);
+        Map<String, Type> beforeStatBlock = new HashMap(localVariable);
         String forBlock = "for (" + this.visit(ctx.condition_for_each()) + ")" +
                 this.visit(ctx.stat_block());
         localVariable = beforeStatBlock;
@@ -302,7 +430,7 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
     @Override
     public String  visitForEachVertex(GraphExprParser.ForEachVertexContext ctx) {
         String left = ctx.ID(0).getText();
-        addToLocalVariableList(left);
+        addToLocalVariableList(left, Type.VERTEX);
         String right = ctx.ID(1).getText();
         checkVariable(right);
         return "Vertex " + left + " : "+ right + ".getVertices()";
@@ -311,7 +439,7 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
     @Override
     public String visitForEachEdge(GraphExprParser.ForEachEdgeContext ctx) {
         String left = ctx.ID(0).getText();
-        addToLocalVariableList(left);
+        addToLocalVariableList(left, Type.EDGE);
         String right = ctx.ID(1).getText();
         checkVariable(right);
         return "Edge " + left + " : "+ right + ".getEdges()";
@@ -320,11 +448,13 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
     @Override
     public String visitForEachAdjacencyVertex(GraphExprParser.ForEachAdjacencyVertexContext ctx)  {
         String left = ctx.ID(0).getText();
-        addToLocalVariableList(left);
+        addToLocalVariableList(left, Type.VERTEX);
         String vertex = ctx.ID(1).getText();
         checkVariable(vertex);
+        checkCast(vertex, Type.VERTEX);
         String graph = ctx.ID(2).getText();
         checkVariable(graph);
+        checkCast(graph, Type.GRAPH);
         return "Vertex " + left + " : " + graph + ".getAdjacencyVertices(" + vertex + ")";
     }
 
@@ -332,7 +462,7 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
     public String visitVoidFunction(GraphExprParser.VoidFunctionContext ctx) {
         clearLocalVariableList();
         String name = ctx.ID().getText();
-        addToFunctionList(name);
+        addToFunctionList(name, Type.VOID);
         return "private static void " + name + this.visit(ctx.param()) + this.visit(ctx.stat_block());
     }
 
@@ -340,9 +470,9 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
     public String visitReturnFunction(GraphExprParser.ReturnFunctionContext ctx) {
         clearLocalVariableList();
         String name = ctx.ID().getText();
-        addToFunctionList(name);
         String returnType = ctx.type().getText();
         returnType = getStringWithFirstCapital(returnType);
+        addToFunctionList(name, Type.getTypeByString(returnType));
         return "private static " + returnType + " " + name +
                 this.visit(ctx.param()) +
                 this.visit(ctx.stat_block_with_return());
@@ -357,6 +487,8 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
     public String visitReturn_id(GraphExprParser.Return_idContext ctx) {
         String id = ctx.ID().getText();
         checkVariable(id);
+        GraphExprParser.ReturnFunctionContext context = (GraphExprParser.ReturnFunctionContext) ctx.getParent().getParent();
+        checkCast(id, Type.getTypeByString(getStringWithFirstCapital(context.type().getText())));
         return "return " + id + ";\n";
     }
 
@@ -405,7 +537,7 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
         String type = ctx.type().getText();
         type = getStringWithFirstCapital(type);
         String name = ctx.ID().getText();
-        addToLocalVariableList(name);
+        addToLocalVariableList(name, Type.getTypeByString(type));
         return type + " " + name + ", " + this.visit(ctx.arg());
     }
 
@@ -414,7 +546,7 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
         String type = ctx.type().getText();
         type = getStringWithFirstCapital(type);
         String name = ctx.ID().getText();
-        addToLocalVariableList(name);
+        addToLocalVariableList(name, Type.getTypeByString(type));
         return type + " " + name;
     }
 
