@@ -3,7 +3,7 @@ package by.bsuir.lpis.grlang;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Graph implements Id{
+public class Graph {
 
     private List<Vertex> vertices = new ArrayList<>();
     private List<Edge> edges = new ArrayList<>();
@@ -13,17 +13,14 @@ public class Graph implements Id{
         this.name = name;
     }
 
-    @Override
     public List<Vertex> getVertices() {
         return vertices;
     }
 
-    @Override
     public List<Edge> getEdges() {
         return edges;
     }
 
-    @Override
     public String toString() {
         return "Graph{" +
                 "name='" + name +
@@ -32,7 +29,6 @@ public class Graph implements Id{
                 '}';
     }
 
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -43,7 +39,6 @@ public class Graph implements Id{
         return edges != null ? edges.equals(graph.edges) : graph.edges == null;
     }
 
-    @Override
     public int hashCode() {
         int result = vertices != null ? vertices.hashCode() : 0;
         result = 31 * result + (edges != null ? edges.hashCode() : 0);
@@ -68,7 +63,9 @@ public class Graph implements Id{
     }
 
     public Graph add(Edge edge){
-        edges.add(edge);
+        if (!contain(edge)){
+            edges.add(edge);
+        }
         if (!contain(edge.getSource())){
             vertices.add(edge.getSource());
         }
@@ -78,13 +75,30 @@ public class Graph implements Id{
         return this;
     }
 
+    public Graph add(Graph graph){
+        for (Vertex vertex: graph.getVertices()){
+            add(vertex);
+        }
+        for (Edge edge: graph.getEdges()){
+            add(edge);
+        }
+        return this;
+    }
+
     public Graph remove(Vertex vertex){
         vertices.remove(vertex);
+        getEdges().removeIf(edge -> edge.haveAdjacencyVertex(vertex));
         return this;
     }
 
     public Graph remove(Edge edge){
         edges.remove(edge);
+        return this;
+    }
+
+    public Graph remove(Graph graph){
+        getVertices().removeAll(getVertices());
+        getEdges().removeAll(graph.getEdges());
         return this;
     }
 

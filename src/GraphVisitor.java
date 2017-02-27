@@ -248,8 +248,10 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
     public String visitNameObjectEdge(GraphExprParser.NameObjectEdgeContext ctx) {
         String source = ctx.connect().source.getText();
         checkVariable(source);
+        checkCast(source, Type.VERTEX);
         String target = ctx.connect().target.getText();
         checkVariable(target);
+        checkCast(target, Type.VERTEX);
         GraphExprParser.Create_edgeContext context = (GraphExprParser.Create_edgeContext) ctx.getParent();
         String name = context.ID().getText();
         Type type = getTypeVariable(name);
@@ -281,6 +283,7 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
     public String visitPush_in_graph(GraphExprParser.Push_in_graphContext ctx) {
         String name = ctx.id.getText();
         checkVariable(name);
+        checkCast(name, Type.GRAPH);
         String push = this.visit(ctx.push_more());
         return name + push;
     }
@@ -433,6 +436,7 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
         addToLocalVariableList(left, Type.VERTEX);
         String right = ctx.ID(1).getText();
         checkVariable(right);
+        checkCast(right, Type.GRAPH);
         return "Vertex " + left + " : "+ right + ".getVertices()";
     }
 
@@ -442,6 +446,7 @@ public class GraphVisitor extends GraphExprBaseVisitor<String> {
         addToLocalVariableList(left, Type.EDGE);
         String right = ctx.ID(1).getText();
         checkVariable(right);
+        checkCast(right, Type.GRAPH);
         return "Edge " + left + " : "+ right + ".getEdges()";
     }
 
