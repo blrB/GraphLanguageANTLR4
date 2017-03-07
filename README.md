@@ -1,3 +1,57 @@
 #**Graph Language** 
 
 Graph Language with ANTLR-4.6 for laboratory work 
+
+##Examle:
+
+```sh
+
+graph dfsTree = "Dfs Tree Graph"
+graph used = "Used vertex"
+
+main {
+    print "DFS START"
+    graph gr = createGraph()
+    vertex v3 = "v3"
+    dfs(gr, v3)
+    print "DFS FINISH"
+}
+
+fn graph createGraph(){
+    graph gr = "test graph"
+    vertex v1 = "v1"
+    vertex v2 = "v2"
+    vertex v3 = "v3"
+    vertex v4 = "v4"
+    edge e1 = <v1,v2>
+    edge e2 = <v2,v3>
+    edge e3 = <v3,v4>
+    gr <- e1, e2, e3
+    return gr
+}
+
+fn dfs(graph g, vertex v){
+    used <- v
+    forEach(vertex to in v in g){
+        if (! used <?> to){
+            edge e = <v,to>
+            print "Go from " + v + " to " + to
+            dfsTree <- e
+            dfs(g, to)
+        }
+    }
+}
+
+```
+
+##Output:
+
+```sh
+
+DFS START
+Go from Vertex{name='v3'} to Vertex{name='v2'}
+Go from Vertex{name='v2'} to Vertex{name='v1'}
+Go from Vertex{name='v3'} to Vertex{name='v4'}
+DFS FINISH
+
+```

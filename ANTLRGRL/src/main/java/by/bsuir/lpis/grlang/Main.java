@@ -1,4 +1,4 @@
-// program Dfs_gr Mon Feb 27 10:48:52 MSK 2017
+// program Dfs_gr Tue Mar 07 13:31:36 MSK 2017
 package by.bsuir.lpis.grlang;
 public class Main {
 static Graph dfsTree = new Graph("Dfs Tree Graph");
