@@ -2,6 +2,31 @@
 
 Graph Language with ANTLR-4.6 for laboratory work 
 
+## Getting Started with ANTLR v4
+
+```sh
+
+$ cd /usr/local/lib
+$ sudo curl -O http://www.antlr.org/download/antlr-4.6-complete.jar
+$ export CLASSPATH=".:/usr/local/lib/antlr-4.6-complete.jar:$CLASSPATH"
+$ alias antlr4='java -jar /usr/local/lib/antlr-4.6-complete.jar'
+$ alias grun='java org.antlr.v4.gui.TestRig'
+
+```
+
+http://www.antlr.org/
+
+## Code generation
+
+```sh
+
+$ cd GraphLanguageANTLR4
+$ antlr4 -visitor -no-listener -lib src src/GraphExpr.g4 
+
+```
+
+or use [ANTLR v4 grammars plugin](https://github.com/antlr/intellij-plugin-v4) for Intellij and other Jetbrains IDEs
+
 ##Examle:
 
 ```sh
