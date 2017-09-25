@@ -1,4 +1,4 @@
-#**Graph Language** 
+# **Graph Language** 
 
 Graph Language with ANTLR-4.6 for laboratory work 
 
@@ -27,7 +27,7 @@ $ antlr4 -visitor -no-listener -lib src src/GraphExpr.g4
 
 or use [ANTLR v4 grammars plugin](https://github.com/antlr/intellij-plugin-v4) for Intellij and other Jetbrains IDEs
 
-##Examle:
+## Examle:
 
 ```sh
 
@@ -69,7 +69,7 @@ fn dfs(graph g, vertex v){
 
 ```
 
-##Output:
+## Output:
 
 ```sh
 
